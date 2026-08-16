@@ -6,7 +6,6 @@ plugins {
 android {
     namespace = "com.plcoding.mycalculator"
     compileSdk {
-        // Bumped to 37: androidx.lifecycle 2.11.0 requires compiling against API 37+.
         version = release(37)
     }
 
