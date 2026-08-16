@@ -78,8 +78,8 @@ jobs:
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
 
-      - name: Upload artifacts
-        uses: actions/upload-artifacts@v6
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
         with:
           name: unit-test-results
           path: '**/build/test-results/**/*.xml'
