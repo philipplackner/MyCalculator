@@ -6,7 +6,7 @@ private const val RIGHT_PARENTHESIS = ')'
 
 class DefaultExpressionEvaluator : ExpressionEvaluator {
 
-    override fun evaluate(expression: String): Double? = Parser(expression).parse()
+    override fun Evaluate(expression: String): Double? = Parser(expression).parse()
 
     /**
      * A recursive descent parser over the expression grammar, one precedence level per method:

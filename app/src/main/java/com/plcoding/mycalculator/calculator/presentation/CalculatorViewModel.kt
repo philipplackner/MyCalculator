@@ -145,7 +145,7 @@ class CalculatorViewModel(
         if (!hasOperation) {
             return null
         }
-        return expressionEvaluator.evaluate(this)?.format()
+        return expressionEvaluator.Evaluate(this)?.format()
     }
 
     private fun Double.format(): String = BigDecimal.valueOf(this)
