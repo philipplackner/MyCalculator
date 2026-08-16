@@ -21,5 +21,5 @@ package com.plcoding.mycalculator.calculator.domain
  * undefined (a division by zero).
  */
 fun interface ExpressionEvaluator {
-    fun Evaluate(expression: String): Double?
+    fun evaluate(expression: String): Double?
 }

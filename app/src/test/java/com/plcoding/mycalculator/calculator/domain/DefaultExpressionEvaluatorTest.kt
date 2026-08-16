@@ -29,22 +29,22 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `adds two operands`() {
-            assertThat(evaluator.Evaluate("1+2")).isEqualTo(3.0)
+            assertThat(evaluator.evaluate("1+2")).isEqualTo(3.0)
         }
 
         @Test
         fun `subtracts two operands`() {
-            assertThat(evaluator.Evaluate("9−4")).isEqualTo(5.0)
+            assertThat(evaluator.evaluate("9−4")).isEqualTo(5.0)
         }
 
         @Test
         fun `multiplies two operands`() {
-            assertThat(evaluator.Evaluate("6×7")).isEqualTo(42.0)
+            assertThat(evaluator.evaluate("6×7")).isEqualTo(42.0)
         }
 
         @Test
         fun `divides two operands into a fractional result`() {
-            assertThat(evaluator.Evaluate("9÷2")).isEqualTo(4.5)
+            assertThat(evaluator.evaluate("9÷2")).isEqualTo(4.5)
         }
     }
 
@@ -53,29 +53,29 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `multiplication binds tighter than addition`() {
-            assertThat(evaluator.Evaluate("2+3×4")).isEqualTo(14.0)
+            assertThat(evaluator.evaluate("2+3×4")).isEqualTo(14.0)
         }
 
         @Test
         fun `division binds tighter than subtraction`() {
-            assertThat(evaluator.Evaluate("10−4÷2")).isEqualTo(8.0)
+            assertThat(evaluator.evaluate("10−4÷2")).isEqualTo(8.0)
         }
 
         /** Right-associativity would give 10−(4−3) = 9. */
         @Test
         fun `additions and subtractions chain from left to right`() {
-            assertThat(evaluator.Evaluate("10−4−3")).isEqualTo(3.0)
+            assertThat(evaluator.evaluate("10−4−3")).isEqualTo(3.0)
         }
 
         /** Right-associativity would give 12÷(4÷3) = 9. */
         @Test
         fun `multiplications and divisions chain from left to right`() {
-            assertThat(evaluator.Evaluate("12÷4÷3")).isEqualTo(1.0)
+            assertThat(evaluator.evaluate("12÷4÷3")).isEqualTo(1.0)
         }
 
         @Test
         fun `both precedence levels hold in one expression`() {
-            assertThat(evaluator.Evaluate("2+3×4−10÷5")).isEqualTo(12.0)
+            assertThat(evaluator.evaluate("2+3×4−10÷5")).isEqualTo(12.0)
         }
     }
 
@@ -84,12 +84,12 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `a group is evaluated before the operator in front of it`() {
-            assertThat(evaluator.Evaluate("2×(3+4)")).isEqualTo(14.0)
+            assertThat(evaluator.evaluate("2×(3+4)")).isEqualTo(14.0)
         }
 
         @Test
         fun `nested groups are evaluated from the inside out`() {
-            assertThat(evaluator.Evaluate("((2+3)×2)")).isEqualTo(10.0)
+            assertThat(evaluator.evaluate("((2+3)×2)")).isEqualTo(10.0)
         }
 
         /**
@@ -100,7 +100,7 @@ class DefaultExpressionEvaluatorTest {
         @ParameterizedTest
         @ValueSource(strings = ["5(3)", "(1)(2)", "(3)5", "2(3+4)"])
         fun `implicit multiplication against a group is not parsed`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
     }
 
@@ -109,37 +109,37 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `a leading minus negates only the first operand`() {
-            assertThat(evaluator.Evaluate("−5+3")).isEqualTo(-2.0)
+            assertThat(evaluator.evaluate("−5+3")).isEqualTo(-2.0)
         }
 
         @Test
         fun `a minus right after an opening parenthesis negates the operand`() {
-            assertThat(evaluator.Evaluate("2×(−3)")).isEqualTo(-6.0)
+            assertThat(evaluator.evaluate("2×(−3)")).isEqualTo(-6.0)
         }
 
         @Test
         fun `a minus right after a binary operator negates the right operand`() {
-            assertThat(evaluator.Evaluate("5×−3")).isEqualTo(-15.0)
+            assertThat(evaluator.evaluate("5×−3")).isEqualTo(-15.0)
         }
 
         @Test
         fun `two minuses in operand position cancel each other out`() {
-            assertThat(evaluator.Evaluate("−−5")).isEqualTo(5.0)
+            assertThat(evaluator.evaluate("−−5")).isEqualTo(5.0)
         }
 
         @Test
         fun `a minus in front of a group negates the whole group`() {
-            assertThat(evaluator.Evaluate("−(2+3)")).isEqualTo(-5.0)
+            assertThat(evaluator.evaluate("−(2+3)")).isEqualTo(-5.0)
         }
 
         @Test
         fun `subtracting a negative operand adds it`() {
-            assertThat(evaluator.Evaluate("5−−3")).isEqualTo(8.0)
+            assertThat(evaluator.evaluate("5−−3")).isEqualTo(8.0)
         }
 
         @Test
         fun `a negated operand keeps its fractional part`() {
-            assertThat(evaluator.Evaluate("−2.5+1")).isEqualTo(-1.5)
+            assertThat(evaluator.evaluate("−2.5+1")).isEqualTo(-1.5)
         }
     }
 
@@ -148,27 +148,27 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `an operand may start with the decimal separator`() {
-            assertThat(evaluator.Evaluate(".5+1")).isEqualTo(1.5)
+            assertThat(evaluator.evaluate(".5+1")).isEqualTo(1.5)
         }
 
         @Test
         fun `an operand may end with the decimal separator`() {
-            assertThat(evaluator.Evaluate("5.+2")).isEqualTo(7.0)
+            assertThat(evaluator.evaluate("5.+2")).isEqualTo(7.0)
         }
 
         @Test
         fun `a lone decimal separator is not an operand`() {
-            assertThat(evaluator.Evaluate(".")).isNull()
+            assertThat(evaluator.evaluate(".")).isNull()
         }
 
         @Test
         fun `an operand with two decimal separators has no result`() {
-            assertThat(evaluator.Evaluate("1.2.3")).isNull()
+            assertThat(evaluator.evaluate("1.2.3")).isNull()
         }
 
         @Test
         fun `leading zeros do not change the value`() {
-            assertThat(evaluator.Evaluate("007+1")).isEqualTo(8.0)
+            assertThat(evaluator.evaluate("007+1")).isEqualTo(8.0)
         }
 
         /**
@@ -181,7 +181,7 @@ class DefaultExpressionEvaluatorTest {
             val original = Locale.getDefault()
             Locale.setDefault(Locale.GERMANY)
             try {
-                assertThat(evaluator.Evaluate("1.5+1")).isEqualTo(2.5)
+                assertThat(evaluator.evaluate("1.5+1")).isEqualTo(2.5)
             } finally {
                 Locale.setDefault(original)
             }
@@ -195,7 +195,7 @@ class DefaultExpressionEvaluatorTest {
         @ParameterizedTest
         @ValueSource(strings = ["٥", "٥+١", "५+५", "５+５", "1+٥"])
         fun `digits from other scripts are not accepted`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
     }
 
@@ -210,19 +210,19 @@ class DefaultExpressionEvaluatorTest {
             ],
         )
         fun `an expression with a missing operand has no result`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
 
         @ParameterizedTest
         @ValueSource(strings = ["(5+3", "((1+2)", "(5", "2×(3+4"])
         fun `an unclosed group has no result`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
 
         @ParameterizedTest
         @ValueSource(strings = ["5)", "(1))", "1+2)", "5 5"])
         fun `anything left over after a complete expression has no result`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
     }
 
@@ -236,20 +236,20 @@ class DefaultExpressionEvaluatorTest {
         @ParameterizedTest
         @ValueSource(strings = ["5-3", "5*3", "5/3", "5%3", "5^3"])
         fun `ASCII operator look-alikes are not operators`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
 
         @ParameterizedTest
         @ValueSource(strings = [" ", "1 + 2", " 1+2", "1+2 ", "1\t+2", "1\n+2", "1 +2"])
         fun `whitespace anywhere has no result`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
 
         /** Zero-width space, bidi override, NUL and a byte-order mark. */
         @ParameterizedTest
         @ValueSource(strings = ["1\u200B+2", "\u202E1+2", "1\u00002", "\uFEFF1+2"])
         fun `invisible and control characters have no result`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
 
         /**
@@ -268,13 +268,13 @@ class DefaultExpressionEvaluatorTest {
             ],
         )
         fun `emoji have no result`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
 
         @ParameterizedTest
         @ValueSource(strings = ["1e5", "1E5", "0x10", "NaN", "Infinity", "1,5", "1_000", "+49", "5f"])
         fun `numbers written in another notation have no result`(expression: String) {
-            assertThat(evaluator.Evaluate(expression)).isNull()
+            assertThat(evaluator.evaluate(expression)).isNull()
         }
     }
 
@@ -283,35 +283,35 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `dividing by zero has no result`() {
-            assertThat(evaluator.Evaluate("5÷0")).isNull()
+            assertThat(evaluator.evaluate("5÷0")).isNull()
         }
 
         /** NaN rather than infinity — a guard that only looks for infinity would let this pass. */
         @Test
         fun `dividing zero by zero has no result`() {
-            assertThat(evaluator.Evaluate("0÷0")).isNull()
+            assertThat(evaluator.evaluate("0÷0")).isNull()
         }
 
         /** The zero is never a literal here, so only the computed value can reveal it. */
         @Test
         fun `dividing by a group that evaluates to zero has no result`() {
-            assertThat(evaluator.Evaluate("5÷(3−3)")).isNull()
+            assertThat(evaluator.evaluate("5÷(3−3)")).isNull()
         }
 
         @Test
         fun `dividing by negative zero has no result`() {
-            assertThat(evaluator.Evaluate("5÷(0×−1)")).isNull()
+            assertThat(evaluator.evaluate("5÷(0×−1)")).isNull()
         }
 
         /** −0.0 is a legal result and stays distinguishable from 0.0. */
         @Test
         fun `multiplying zero by a negative operand keeps the negative sign`() {
-            assertThat(evaluator.Evaluate("0×−1")).isEqualTo(-0.0)
+            assertThat(evaluator.evaluate("0×−1")).isEqualTo(-0.0)
         }
 
         @Test
         fun `an operand too large for a Double has no result`() {
-            assertThat(evaluator.Evaluate("9".repeat(400))).isNull()
+            assertThat(evaluator.evaluate("9".repeat(400))).isNull()
         }
 
         /**
@@ -323,7 +323,7 @@ class DefaultExpressionEvaluatorTest {
             val e300 = "1" + "0".repeat(300)
             val e100 = "1" + "0".repeat(100)
 
-            assertThat(evaluator.Evaluate("$e300×$e100÷$e100")).isNull()
+            assertThat(evaluator.evaluate("$e300×$e100÷$e100")).isNull()
         }
 
         /**
@@ -334,8 +334,8 @@ class DefaultExpressionEvaluatorTest {
         fun `an operand too small for a Double collapses to zero`() {
             val tiny = "0." + "0".repeat(400) + "1"
 
-            assertThat(evaluator.Evaluate(tiny)).isEqualTo(0.0)
-            assertThat(evaluator.Evaluate("5÷$tiny")).isNull()
+            assertThat(evaluator.evaluate(tiny)).isEqualTo(0.0)
+            assertThat(evaluator.evaluate("5÷$tiny")).isNull()
         }
     }
 
@@ -349,7 +349,7 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `a sum of decimal fractions is not exact`() {
-            val result = assertThat(evaluator.Evaluate("0.1+0.2")).isNotNull()
+            val result = assertThat(evaluator.evaluate("0.1+0.2")).isNotNull()
 
             result.isNotEqualTo(0.3)
             result.isCloseTo(0.3, 1e-15)
@@ -357,7 +357,7 @@ class DefaultExpressionEvaluatorTest {
 
         @Test
         fun `an integer beyond the Double mantissa loses its last digit`() {
-            assertThat(evaluator.Evaluate("9007199254740993")).isEqualTo(9007199254740992.0)
+            assertThat(evaluator.evaluate("9007199254740993")).isEqualTo(9007199254740992.0)
         }
 
         /** Both operands are within the keypad's 12-digit input limit, so this is reachable. */
@@ -366,7 +366,7 @@ class DefaultExpressionEvaluatorTest {
             val operand = "999999999999"
             val exact = BigDecimal(operand) * BigDecimal(operand)
 
-            val result = BigDecimal.valueOf(evaluator.Evaluate("$operand×$operand")!!)
+            val result = BigDecimal.valueOf(evaluator.evaluate("$operand×$operand")!!)
 
             assertThat(result.toBigInteger()).isNotEqualTo(exact.toBigInteger())
             assertThat(result.toBigInteger())
@@ -381,7 +381,7 @@ class DefaultExpressionEvaluatorTest {
         fun `a long chain of operators is evaluated without exhausting the stack`() {
             val expression = List(2_000) { "1" }.joinToString("+")
 
-            assertThat(evaluator.Evaluate(expression)).isEqualTo(2_000.0)
+            assertThat(evaluator.evaluate(expression)).isEqualTo(2_000.0)
         }
 
         @Test
@@ -389,27 +389,27 @@ class DefaultExpressionEvaluatorTest {
             val depth = 200
             val expression = "(".repeat(depth) + "1+1" + ")".repeat(depth)
 
-            assertThat(evaluator.Evaluate(expression)).isEqualTo(2.0)
+            assertThat(evaluator.evaluate(expression)).isEqualTo(2.0)
         }
 
         @Test
         fun `a chain of unary minuses negates once per minus`() {
-            assertThat(evaluator.Evaluate("−".repeat(100) + "5")).isEqualTo(5.0)
-            assertThat(evaluator.Evaluate("−".repeat(101) + "5")).isEqualTo(-5.0)
+            assertThat(evaluator.evaluate("−".repeat(100) + "5")).isEqualTo(5.0)
+            assertThat(evaluator.evaluate("−".repeat(101) + "5")).isEqualTo(-5.0)
         }
 
         @Test
         fun `a rejected expression leaves nothing behind for the next one`() {
-            evaluator.Evaluate("(5+3")
-            evaluator.Evaluate("5÷0")
+            evaluator.evaluate("(5+3")
+            evaluator.evaluate("5÷0")
 
-            assertThat(evaluator.Evaluate("1+1")).isEqualTo(2.0)
+            assertThat(evaluator.evaluate("1+1")).isEqualTo(2.0)
         }
 
         @Test
         fun `the same expression evaluates to the same result every time`() {
-            val first = evaluator.Evaluate("2×(3+4)")
-            val second = evaluator.Evaluate("2×(3+4)")
+            val first = evaluator.evaluate("2×(3+4)")
+            val second = evaluator.evaluate("2×(3+4)")
 
             assertThat(second).isEqualTo(first)
         }
